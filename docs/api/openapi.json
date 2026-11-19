@@ -1,0 +1,1903 @@
+{
+  "components": {
+    "schemas": {
+      "ApiErrorResponseDto": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "INVALID_INPUT",
+              "UNAUTHORIZED",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "CONFLICT",
+              "PAYLOAD_TOO_LARGE",
+              "RATE_LIMITED",
+              "INTERNAL_ERROR",
+              "REQUEST_FAILED"
+            ],
+            "example": "INVALID_INPUT",
+            "type": "string"
+          },
+          "correlationId": {
+            "example": "4d3489de-ccda-4d1b-b722-05384763e81e",
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "message": {
+            "example": [
+              "stock must not be less than 0"
+            ],
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ]
+          },
+          "statusCode": {
+            "example": 400,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "statusCode",
+          "code",
+          "message",
+          "correlationId"
+        ],
+        "type": "object"
+      },
+      "AppliedProductFiltersDto": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "description": "Normalized exact category; null when omitted.",
+            "maxLength": 80,
+            "nullable": true,
+            "type": "string"
+          },
+          "search": {
+            "description": "Normalized literal name search; null when omitted.",
+            "maxLength": 120,
+            "nullable": true,
+            "type": "string"
+          },
+          "sortBy": {
+            "enum": [
+              "name",
+              "priceMinor",
+              "stock",
+              "createdAt",
+              "updatedAt"
+            ],
+            "type": "string"
+          },
+          "sortDirection": {
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "search",
+          "category",
+          "sortBy",
+          "sortDirection"
+        ],
+        "type": "object"
+      },
+      "CreateProductDto": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "description": "Optional, trimmed; null is rejected.",
+            "example": "Seeds",
+            "maxLength": 80,
+            "type": "string",
+            "x-normalization": "trim-before-validation"
+          },
+          "description": {
+            "description": "Optional, trimmed before validation; null is rejected.",
+            "example": "Demonstration product",
+            "maxLength": 2000,
+            "type": "string",
+            "x-normalization": "trim-before-validation"
+          },
+          "name": {
+            "description": "Trimmed before validation; nonempty after trimming.",
+            "example": "Organic seed",
+            "maxLength": 120,
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string",
+            "x-normalization": "trim-before-validation"
+          },
+          "priceMinor": {
+            "description": "Safe integer in two-decimal minor units; no floating-point amounts.",
+            "example": 1299,
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "stock": {
+            "example": 3,
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "priceMinor",
+          "stock"
+        ],
+        "type": "object"
+      },
+      "CurrentUserResponseDto": {
+        "additionalProperties": false,
+        "properties": {
+          "createdAt": {
+            "example": "2026-11-19T00:00:00.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "email": {
+            "example": "demo@example.test",
+            "format": "email",
+            "type": "string"
+          },
+          "id": {
+            "description": "Opaque user identifier; seed generates UUIDs.",
+            "example": "4d3489de-ccda-4d1b-b722-05384763e81e",
+            "type": "string"
+          },
+          "updatedAt": {
+            "example": "2026-11-19T00:00:00.000Z",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "LoginDto": {
+        "additionalProperties": false,
+        "properties": {
+          "email": {
+            "description": "Trimmed and lowercased before validation. Example is not a seeded account.",
+            "example": "demo@example.test",
+            "format": "email",
+            "maxLength": 254,
+            "type": "string",
+            "x-normalization": "trim-and-lowercase-before-validation"
+          },
+          "password": {
+            "description": "Login accepts1..128 characters; seed separately requires12..128. No actual credentials included.",
+            "example": "DOCUMENTATION-ONLY-password",
+            "format": "password",
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object"
+      },
+      "ProductPageResponseDto": {
+        "additionalProperties": false,
+        "properties": {
+          "filters": {
+            "$ref": "#/components/schemas/AppliedProductFiltersDto"
+          },
+          "itemCount": {
+            "description": "Number of items in this response, distinct from total matching items.",
+            "maximum": 100,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ProductResponseDto"
+            },
+            "type": "array"
+          },
+          "page": {
+            "example": 1,
+            "maximum": 10000,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "pageSize": {
+            "example": 20,
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "total": {
+            "example": 1,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "totalPages": {
+            "description": "ceil(total/pageSize);0 when empty. A page beyond the last returns empty items.",
+            "example": 1,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "itemCount",
+          "filters",
+          "items",
+          "total",
+          "page",
+          "pageSize",
+          "totalPages"
+        ],
+        "type": "object"
+      },
+      "ProductResponseDto": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "example": "Seeds",
+            "maxLength": 80,
+            "type": "string"
+          },
+          "createdAt": {
+            "example": "2026-11-19T00:00:00.000Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "example": "Demonstration product",
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "id": {
+            "example": "0123456789abcdef01234567",
+            "pattern": "^[a-fA-F0-9]{24}$",
+            "type": "string"
+          },
+          "name": {
+            "example": "Organic seed",
+            "maxLength": 120,
+            "minLength": 1,
+            "type": "string"
+          },
+          "priceMinor": {
+            "description": "Integer minor units;1299 represents12.99 at the documented two-decimal convention. No currency conversion.",
+            "example": 1299,
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "stock": {
+            "example": 3,
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "updatedAt": {
+            "example": "2026-11-19T00:00:00.000Z",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "priceMinor",
+          "stock",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "TokenResponseDto": {
+        "additionalProperties": false,
+        "properties": {
+          "accessToken": {
+            "description": "Illustrative placeholder; real access tokens are signed HS256 JWTs.",
+            "example": "ACCESS_JWT_RETURNED_BY_LOGIN",
+            "type": "string"
+          },
+          "expiresIn": {
+            "description": "Configured access lifetime in seconds; default900.",
+            "example": 900,
+            "maximum": 3600,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "tokenType": {
+            "enum": [
+              "Bearer"
+            ],
+            "example": "Bearer",
+            "type": "string"
+          }
+        },
+        "required": [
+          "accessToken",
+          "tokenType",
+          "expiresIn"
+        ],
+        "type": "object"
+      },
+      "UpdateProductDto": {
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "category": {
+            "description": "Optional, trimmed; null is rejected.",
+            "example": "Seeds",
+            "maxLength": 80,
+            "type": "string",
+            "x-normalization": "trim-before-validation"
+          },
+          "description": {
+            "description": "Optional, trimmed before validation; null is rejected.",
+            "example": "Demonstration product",
+            "maxLength": 2000,
+            "type": "string",
+            "x-normalization": "trim-before-validation"
+          },
+          "name": {
+            "description": "Trimmed before validation; nonempty after trimming.",
+            "example": "Organic seed",
+            "maxLength": 120,
+            "minLength": 1,
+            "pattern": "\\S",
+            "type": "string",
+            "x-normalization": "trim-before-validation"
+          },
+          "priceMinor": {
+            "description": "Safe integer in two-decimal minor units; no floating-point amounts.",
+            "example": 1299,
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "stock": {
+            "example": 3,
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "access-token": {
+        "bearerFormat": "JWT",
+        "description": "HS256 access JWT; validated signature/issuer/audience/expiration. Paste only the access token.",
+        "scheme": "bearer",
+        "type": "http"
+      },
+      "refresh-cookie": {
+        "description": "Browser-managed opaque refresh token. HttpOnly; never place in localStorage or JSON. Login sets it; refresh rotates; logout clears.",
+        "in": "cookie",
+        "name": "refresh_token",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "contact": {},
+    "description": "Actual NestJS/CQRS assessment backend. Product priceMinor uses safe integer minor units. No registration. Access JWT plus rotating HttpOnly refresh cookie; Origin and CSRF header required on auth mutations. Examples are synthetic; no credentials or live tokens are exported.",
+    "title": "Product Management API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "description": "Public to JWT guard, but exact Origin and X-CSRF-Protection:1 are required. Invalid credentials are generic401. Returns access JWT in JSON; opaque refresh only in HttpOnly cookie. No registration endpoint.",
+        "operationId": "login",
+        "parameters": [
+          {
+            "description": "Exact configured CORS origin. Browsers control this forbidden header automatically; allow the Swagger UI origin explicitly for Try it out.",
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "example": "http://localhost:4200",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Required independently of CORS, on login/refresh/logout.",
+            "in": "header",
+            "name": "X-CSRF-Protection",
+            "required": true,
+            "schema": {
+              "enum": [
+                "1"
+              ],
+              "example": "1",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponseDto"
+                }
+              }
+            },
+            "description": "",
+            "headers": {
+              "Set-Cookie": {
+                "description": "HttpOnly refresh_token cookie; Path=/auth; configured SameSite; Secure in production. Login/refresh use remaining family expiry; logout clears it. Browser-managed, never copy into JSON/localStorage.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Invalid input; unknown properties and invalid types are rejected.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Missing/invalid/expired authentication or refresh session; invalid credentials are generic.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Origin or CSRF header rejected.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "JSON body exceeds32kb.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Per-handler/IP rate limit exceeded; thresholds are environment-configured.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until retry is allowed.",
+                "schema": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Unexpected failure; provider details are never returned.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "summary": "Login and create a refresh-token family",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "description": "Idempotent204 when cookie is missing. Origin/CSRF remain required. Already-issued stateless access JWTs remain valid until expiry.",
+        "operationId": "logout",
+        "parameters": [
+          {
+            "description": "Exact configured CORS origin. Browsers control this forbidden header automatically; allow the Swagger UI origin explicitly for Try it out.",
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "example": "http://localhost:4200",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Required independently of CORS, on login/refresh/logout.",
+            "in": "header",
+            "name": "X-CSRF-Protection",
+            "required": true,
+            "schema": {
+              "enum": [
+                "1"
+              ],
+              "example": "1",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "maxProperties": 0,
+                "type": "object"
+              }
+            }
+          },
+          "description": "Absent body or empty object only.",
+          "required": false
+        },
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {
+              "Set-Cookie": {
+                "description": "HttpOnly refresh_token cookie; Path=/auth; configured SameSite; Secure in production. Login/refresh use remaining family expiry; logout clears it. Browser-managed, never copy into JSON/localStorage.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Invalid input; unknown properties and invalid types are rejected.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Origin or CSRF header rejected.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "JSON body exceeds32kb.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Per-handler/IP rate limit exceeded; thresholds are environment-configured.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until retry is allowed.",
+                "schema": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Unexpected failure; provider details are never returned.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {},
+          {
+            "refresh-cookie": []
+          }
+        ],
+        "summary": "Revoke refresh capability and clear cookie",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "getCurrentUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserResponseDto"
+                }
+              }
+            },
+            "description": "",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Missing/invalid/expired authentication or refresh session; invalid credentials are generic.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Per-handler/IP rate limit exceeded; thresholds are environment-configured.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until retry is allowed.",
+                "schema": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Unexpected failure; provider details are never returned.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Return safe current-user data",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "description": "Browser-managed refresh_token cookie plus Origin/CSRF headers. Fixed absolute family expiry; current token rotates once. Reuse or a concurrent loser conservatively revokes the whole family; coordinate single-flight on clients.",
+        "operationId": "refreshTokens",
+        "parameters": [
+          {
+            "description": "Exact configured CORS origin. Browsers control this forbidden header automatically; allow the Swagger UI origin explicitly for Try it out.",
+            "in": "header",
+            "name": "Origin",
+            "required": true,
+            "schema": {
+              "example": "http://localhost:4200",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Required independently of CORS, on login/refresh/logout.",
+            "in": "header",
+            "name": "X-CSRF-Protection",
+            "required": true,
+            "schema": {
+              "enum": [
+                "1"
+              ],
+              "example": "1",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "maxProperties": 0,
+                "type": "object"
+              }
+            }
+          },
+          "description": "Absent body or empty object only.",
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponseDto"
+                }
+              }
+            },
+            "description": "",
+            "headers": {
+              "Set-Cookie": {
+                "description": "HttpOnly refresh_token cookie; Path=/auth; configured SameSite; Secure in production. Login/refresh use remaining family expiry; logout clears it. Browser-managed, never copy into JSON/localStorage.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Invalid input; unknown properties and invalid types are rejected.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Missing/invalid/expired authentication or refresh session; invalid credentials are generic.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Origin or CSRF header rejected.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "JSON body exceeds32kb.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Per-handler/IP rate limit exceeded; thresholds are environment-configured.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until retry is allowed.",
+                "schema": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Unexpected failure; provider details are never returned.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "refresh-cookie": []
+          }
+        ],
+        "summary": "Atomically rotate a refresh token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/products": {
+      "get": {
+        "description": "Defaults page1/pageSize20, createdAt descending. Literal case-insensitive name search, exact category and allowlisted sorting; _id tie-break. Count/page are not a transactional snapshot.",
+        "operationId": "listProducts",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "maximum": 10000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Case-insensitive literal substring on name; regex metacharacters are escaped. Trimmed before bounds.",
+            "in": "query",
+            "name": "search",
+            "required": false,
+            "schema": {
+              "maxLength": 120,
+              "type": "string"
+            }
+          },
+          {
+            "description": "Exact category after trimming; omit to include all.",
+            "in": "query",
+            "name": "category",
+            "required": false,
+            "schema": {
+              "maxLength": 80,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "required": false,
+            "schema": {
+              "default": "createdAt",
+              "enum": [
+                "name",
+                "priceMinor",
+                "stock",
+                "createdAt",
+                "updatedAt"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortDirection",
+            "required": false,
+            "schema": {
+              "default": "desc",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductPageResponseDto"
+                }
+              }
+            },
+            "description": "",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Invalid input; unknown properties and invalid types are rejected.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Missing/invalid/expired authentication or refresh session; invalid credentials are generic.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Per-handler/IP rate limit exceeded; thresholds are environment-configured.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until retry is allowed.",
+                "schema": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Unexpected failure; provider details are never returned.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "List products with server-side pagination",
+        "tags": [
+          "products"
+        ]
+      },
+      "post": {
+        "description": "Requires Bearer access JWT. Safe integer priceMinor and stock; input strings are trimmed.",
+        "operationId": "createProduct",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            },
+            "description": "",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Invalid input; unknown properties and invalid types are rejected.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Missing/invalid/expired authentication or refresh session; invalid credentials are generic.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "JSON body exceeds32kb.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Per-handler/IP rate limit exceeded; thresholds are environment-configured.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until retry is allowed.",
+                "schema": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Unexpected failure; provider details are never returned.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Create a product",
+        "tags": [
+          "products"
+        ]
+      }
+    },
+    "/products/{id}": {
+      "delete": {
+        "description": "204 with no body; deleting a missing product returns404.",
+        "operationId": "deleteProduct",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Invalid input; unknown properties and invalid types are rejected.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Missing/invalid/expired authentication or refresh session; invalid credentials are generic.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Valid product identifier not found.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Per-handler/IP rate limit exceeded; thresholds are environment-configured.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until retry is allowed.",
+                "schema": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Unexpected failure; provider details are never returned.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Delete an existing product",
+        "tags": [
+          "products"
+        ]
+      },
+      "get": {
+        "operationId": "getProduct",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            },
+            "description": "",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Invalid input; unknown properties and invalid types are rejected.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Missing/invalid/expired authentication or refresh session; invalid credentials are generic.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Valid product identifier not found.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Per-handler/IP rate limit exceeded; thresholds are environment-configured.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until retry is allowed.",
+                "schema": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Unexpected failure; provider details are never returned.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Get one product",
+        "tags": [
+          "products"
+        ]
+      },
+      "patch": {
+        "description": "At least one known field is required. null and unknown properties are rejected; omitted values are preserved.",
+        "operationId": "updateProduct",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            },
+            "description": "",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Invalid input; unknown properties and invalid types are rejected.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Missing/invalid/expired authentication or refresh session; invalid credentials are generic.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Valid product identifier not found.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "JSON body exceeds32kb.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Per-handler/IP rate limit exceeded; thresholds are environment-configured.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds until retry is allowed.",
+                "schema": {
+                  "minimum": 0,
+                  "type": "integer"
+                }
+              },
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponseDto"
+                }
+              }
+            },
+            "description": "Unexpected failure; provider details are never returned.",
+            "headers": {
+              "X-Correlation-Id": {
+                "description": "Server-generated request correlation UUID.",
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Partially update a product",
+        "tags": [
+          "products"
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "Same API origin; no /api prefix",
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "description": "Login, safe current user, refresh rotation and logout",
+      "name": "auth"
+    },
+    {
+      "description": "Bearer-protected product CRUD and bounded server pagination",
+      "name": "products"
+    }
+  ]
+}

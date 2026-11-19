@@ -1,0 +1,24 @@
+# Credenciales y entorno local
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+node_modules/
+dist/
+coverage/
+
+__pycache__/
+*.pyc
+
+*.tsbuildinfo
+apps/api/.test-artifacts/
+!.env.docker.example
+seed-dist/
+output/delivery/
+
+# Salidas locales de pruebas y empaquetado
+apps/web/e2e/evidence/
+
+/Entrega_Final/

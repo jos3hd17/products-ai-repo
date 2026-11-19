@@ -1,0 +1,22 @@
+{
+  "name": "full-stack-ai-assessment",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+  },
+  "scripts": {
+    "build": "pnpm --filter @assessment/api build && pnpm --filter @assessment/web build",
+    "typecheck": "pnpm --filter @assessment/api typecheck && pnpm --filter @assessment/web typecheck",
+    "lint": "pnpm --filter @assessment/api lint && pnpm --filter @assessment/web lint",
+    "test": "pnpm --filter @assessment/api test && pnpm --filter @assessment/web test",
+    "test:unit": "pnpm --filter @assessment/api test:unit",
+    "start:dev": "pnpm --filter @assessment/api start:dev",
+    "seed:dev": "pnpm --filter @assessment/api seed:dev",
+    "openapi:export": "pnpm --filter @assessment/api openapi:export",
+    "openapi:check": "pnpm --filter @assessment/api openapi:check",
+    "web:dev": "pnpm --filter @assessment/web start",
+    "test:e2e": "pnpm build && pnpm --filter @assessment/web e2e:real"
+  }
+}

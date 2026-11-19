@@ -1,0 +1,18 @@
+{
+  "estado": "registro cerrado; resumen estático",
+  "alcance": "Cuatro ejecuciones CLI anteriores al cierre de Docker. No representan el consumo completo del proyecto ni de los subagentes nativos.",
+  "ejecuciones_medidas": 4,
+  "entrada": 79382,
+  "entrada_en_cache": 44800,
+  "entrada_sin_cache": 34582,
+  "salida": 1265,
+  "total_parcial": 80647,
+  "total_proyecto": null,
+  "coste_total": null,
+  "horas_efectivas": null,
+  "fuente_sha256": "2a9d39b46db351ad27ac2b8887378d9d1a5c628ddb3ccd0f01007153f9788400",
+  "primer_commit": "2026-11-18T18:43:56-05:00",
+  "cierre_docker": "2026-11-19T13:59:22-05:00",
+  "ventana_calendario_segundos": 69326,
+  "nota_tiempo": "La ventana entre commits incluye pausas y no equivale a horas de trabajo efectivo. El primer commit tampoco acredita el comienzo exacto del trabajo."
+}

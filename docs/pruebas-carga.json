@@ -1,0 +1,433 @@
+{
+  "date": "2026-11-19T20:17:19.497Z",
+  "dataset": {
+    "inserted": 5000,
+    "preExisting": 1,
+    "total": 5001,
+    "seedDurationMs": null,
+    "bulkSeeding": "Mongoose insertMany; not 5000 HTTP create requests",
+    "namePrefix": "Carga5000 3764545e"
+  },
+  "environment": {
+    "scope": "Local Docker Desktop, shared host, warm caches; no production capacity claim",
+    "loadOrigin": "http://127.0.0.1:18080",
+    "reviewOrigin": "http://localhost:8080",
+    "readiness": "/api-healthz",
+    "capacityRateWindowMs": 1,
+    "normalRateWindowMs": 60000,
+    "auditLogsEnabled": true,
+    "docker": {
+      "cpus": 8,
+      "memoryBytes": 8218316800,
+      "serverVersion": "28.3.0"
+    }
+  },
+  "functional": [
+    {
+      "case": "Default list",
+      "passed": true,
+      "milliseconds": 11.51
+    },
+    {
+      "case": "Fixture first page",
+      "passed": true,
+      "milliseconds": 15.07
+    },
+    {
+      "case": "Fixture last page",
+      "passed": true,
+      "milliseconds": 18.61
+    },
+    {
+      "case": "Beyond last page",
+      "passed": true,
+      "milliseconds": 14.19
+    },
+    {
+      "case": "Exact category",
+      "passed": true,
+      "milliseconds": 9.27
+    },
+    {
+      "case": "Case insensitive substring",
+      "passed": true,
+      "milliseconds": 10.21
+    },
+    {
+      "case": "Search and category",
+      "passed": true,
+      "milliseconds": 6.13
+    },
+    {
+      "case": "No matches",
+      "passed": true,
+      "milliseconds": 9.77
+    },
+    {
+      "case": "Escaped regex characters",
+      "passed": true,
+      "milliseconds": 13.93
+    },
+    {
+      "case": "Order name asc",
+      "passed": true,
+      "milliseconds": 10.53
+    },
+    {
+      "case": "Order name desc",
+      "passed": true,
+      "milliseconds": 9.64
+    },
+    {
+      "case": "Order priceMinor asc",
+      "passed": true,
+      "milliseconds": 8.75
+    },
+    {
+      "case": "Order priceMinor desc",
+      "passed": true,
+      "milliseconds": 11.16
+    },
+    {
+      "case": "Order stock asc",
+      "passed": true,
+      "milliseconds": 13.45
+    },
+    {
+      "case": "Order stock desc",
+      "passed": true,
+      "milliseconds": 9.41
+    },
+    {
+      "case": "Order createdAt asc",
+      "passed": true,
+      "milliseconds": 10.86
+    },
+    {
+      "case": "Order createdAt desc",
+      "passed": true,
+      "milliseconds": 10.91
+    },
+    {
+      "case": "Order updatedAt asc",
+      "passed": true,
+      "milliseconds": 10.53
+    },
+    {
+      "case": "Order updatedAt desc",
+      "passed": true,
+      "milliseconds": 10.91
+    },
+    {
+      "case": "No duplicate IDs across adjacent pages",
+      "passed": true
+    },
+    {
+      "case": "All 50 pages return exactly 5000 unique products",
+      "passed": true
+    }
+  ],
+  "stages": [
+    {
+      "concurrency": 1,
+      "durationSeconds": 8,
+      "successfulRequests": 978,
+      "failedRequests": 0,
+      "errors": {},
+      "successfulRequestsPerSecond": 122.22,
+      "p50Ms": 8.24,
+      "p95Ms": 13.01,
+      "p99Ms": 15.52,
+      "maxMs": 39.31,
+      "responseBytes": 15194655,
+      "perCase": {
+        "Default list": {
+          "requests": 140,
+          "p95Ms": 7.11
+        },
+        "Fixture first page": {
+          "requests": 140,
+          "p95Ms": 10.51
+        },
+        "Fixture last page": {
+          "requests": 140,
+          "p95Ms": 14.34
+        },
+        "Exact category": {
+          "requests": 140,
+          "p95Ms": 8.27
+        },
+        "Case insensitive substring": {
+          "requests": 140,
+          "p95Ms": 11.46
+        },
+        "Search and category": {
+          "requests": 139,
+          "p95Ms": 7.16
+        },
+        "No matches": {
+          "requests": 139,
+          "p95Ms": 14.15
+        }
+      }
+    },
+    {
+      "concurrency": 10,
+      "durationSeconds": 8.03,
+      "successfulRequests": 1858,
+      "failedRequests": 0,
+      "errors": {},
+      "successfulRequestsPerSecond": 231.41,
+      "p50Ms": 52.14,
+      "p95Ms": 81.08,
+      "p99Ms": 105.26,
+      "maxMs": 210.31,
+      "responseBytes": 28811277,
+      "perCase": {
+        "Default list": {
+          "requests": 266,
+          "p95Ms": 18.89
+        },
+        "Search and category": {
+          "requests": 265,
+          "p95Ms": 26.89
+        },
+        "Exact category": {
+          "requests": 265,
+          "p95Ms": 18.95
+        },
+        "Fixture first page": {
+          "requests": 266,
+          "p95Ms": 79.54
+        },
+        "Fixture last page": {
+          "requests": 266,
+          "p95Ms": 85.26
+        },
+        "Case insensitive substring": {
+          "requests": 265,
+          "p95Ms": 81.53
+        },
+        "No matches": {
+          "requests": 265,
+          "p95Ms": 88.46
+        }
+      }
+    },
+    {
+      "concurrency": 30,
+      "durationSeconds": 8.14,
+      "successfulRequests": 1872,
+      "failedRequests": 0,
+      "errors": {},
+      "successfulRequestsPerSecond": 229.89,
+      "p50Ms": 164.08,
+      "p95Ms": 255.52,
+      "p99Ms": 308.57,
+      "maxMs": 367.5,
+      "responseBytes": 29028393,
+      "perCase": {
+        "Default list": {
+          "requests": 268,
+          "p95Ms": 42.99
+        },
+        "Exact category": {
+          "requests": 267,
+          "p95Ms": 41.27
+        },
+        "Search and category": {
+          "requests": 267,
+          "p95Ms": 62.87
+        },
+        "Case insensitive substring": {
+          "requests": 267,
+          "p95Ms": 245.77
+        },
+        "Fixture first page": {
+          "requests": 268,
+          "p95Ms": 268.62
+        },
+        "Fixture last page": {
+          "requests": 268,
+          "p95Ms": 261.73
+        },
+        "No matches": {
+          "requests": 267,
+          "p95Ms": 274.64
+        }
+      }
+    },
+    {
+      "concurrency": 60,
+      "durationSeconds": 8.19,
+      "successfulRequests": 1897,
+      "failedRequests": 0,
+      "errors": {},
+      "successfulRequestsPerSecond": 231.58,
+      "p50Ms": 295.41,
+      "p95Ms": 516.77,
+      "p99Ms": 601.36,
+      "maxMs": 733.63,
+      "responseBytes": 29419218,
+      "perCase": {
+        "Exact category": {
+          "requests": 271,
+          "p95Ms": 156.49
+        },
+        "Search and category": {
+          "requests": 271,
+          "p95Ms": 196.1
+        },
+        "Default list": {
+          "requests": 271,
+          "p95Ms": 137.9
+        },
+        "Fixture first page": {
+          "requests": 271,
+          "p95Ms": 513.17
+        },
+        "Case insensitive substring": {
+          "requests": 271,
+          "p95Ms": 514.59
+        },
+        "No matches": {
+          "requests": 271,
+          "p95Ms": 572.92
+        },
+        "Fixture last page": {
+          "requests": 271,
+          "p95Ms": 551.18
+        }
+      }
+    }
+  ],
+  "resources": {
+    "api": {
+      "peakCpuPercent": 82.19,
+      "peakMemoryMiB": 271.5,
+      "samples": 124
+    },
+    "web": {
+      "peakCpuPercent": 12.9,
+      "peakMemoryMiB": 11.09,
+      "samples": 124
+    },
+    "mongo": {
+      "peakCpuPercent": 675.05,
+      "peakMemoryMiB": 366.8,
+      "samples": 124
+    }
+  },
+  "rateLimit": {
+    "requests": 130,
+    "statuses": {
+      "200": 100,
+      "429": 30
+    },
+    "rejectedHaveRetryAfter": true
+  },
+  "queryPlans": [
+    {
+      "case": "Global newest",
+      "returned": 100,
+      "documentsExamined": 100,
+      "keysExamined": 100,
+      "executionTimeMs": 0,
+      "countDocumentsExamined": 5001,
+      "countKeysExamined": 0,
+      "indexes": [
+        "createdAt_-1__id_-1"
+      ],
+      "stages": [
+        "LIMIT",
+        "FETCH",
+        "IXSCAN"
+      ]
+    },
+    {
+      "case": "Exact category and price",
+      "returned": 100,
+      "documentsExamined": 100,
+      "keysExamined": 100,
+      "executionTimeMs": 1,
+      "countDocumentsExamined": 0,
+      "countKeysExamined": 500,
+      "indexes": [
+        "category_1_priceMinor_1__id_1"
+      ],
+      "stages": [
+        "LIMIT",
+        "FETCH",
+        "IXSCAN"
+      ]
+    },
+    {
+      "case": "Substring search",
+      "returned": 100,
+      "documentsExamined": 102,
+      "keysExamined": 102,
+      "executionTimeMs": 0,
+      "countDocumentsExamined": 0,
+      "countKeysExamined": 5001,
+      "indexes": [
+        "createdAt_-1__id_-1"
+      ],
+      "stages": [
+        "LIMIT",
+        "FETCH",
+        "IXSCAN"
+      ]
+    },
+    {
+      "case": "Last page with search",
+      "returned": 100,
+      "documentsExamined": 100,
+      "keysExamined": 5000,
+      "executionTimeMs": 3,
+      "countDocumentsExamined": 0,
+      "countKeysExamined": 5001,
+      "indexes": [
+        "name_1__id_1"
+      ],
+      "stages": [
+        "LIMIT",
+        "FETCH",
+        "SKIP",
+        "IXSCAN"
+      ]
+    }
+  ],
+  "browser": [
+    {
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "filteredRowsObserved": 20,
+      "total": 5000,
+      "categoryTotal": 500,
+      "paginationWorks": true,
+      "documentOverflow": false,
+      "pageErrors": [],
+      "interactionDurationMs": 602.49,
+      "note": "Duration includes search debounce, page navigation and category filtering; not LCP."
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "filteredRowsObserved": 20,
+      "total": 5000,
+      "categoryTotal": 500,
+      "paginationWorks": true,
+      "documentOverflow": false,
+      "pageErrors": [],
+      "interactionDurationMs": 599.35,
+      "note": "Duration includes search debounce, page navigation and category filtering; not LCP."
+    }
+  ],
+  "originalDataUnchanged": true,
+  "passed": true,
+  "fixturesLeftForReview": true
+}

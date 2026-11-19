@@ -1,0 +1,72 @@
+name: products-review
+x-api-environment: &api-environment
+  NODE_ENV: development
+  PORT: '3000'
+  MONGODB_URI: mongodb://mongo:27017/products_review
+  JWT_SECRET: ${JWT_SECRET:?Run python3 scripts/setup-docker-review.py first}
+  CORS_ORIGINS: http://localhost:${WEB_PORT:-8080},http://127.0.0.1:${WEB_PORT:-8080}
+  COOKIE_SAME_SITE: lax
+  SWAGGER_ENABLED: 'true'
+services:
+  mongo:
+    image: mongo:8.0@sha256:bdc216e9d5a6ec2cfdac789b5832fdab64cd32055f59885cae918a92de63c361
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    networks: [data]
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'quit(db.adminCommand({ping:1}).ok ? 0 : 1)']
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 6
+  api:
+    image: products-review-api:local
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment: *api-environment
+    restart: unless-stopped
+    depends_on:
+      mongo: {condition: service_healthy}
+    networks: [data, edge]
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+  seed:
+    image: products-review-api:local
+    profiles: [tools]
+    environment:
+      <<: *api-environment
+      DEMO_USER_EMAIL: ${DEMO_USER_EMAIL:-review@example.test}
+      DEMO_USER_PASSWORD: ${DEMO_USER_PASSWORD:?Run python3 scripts/setup-docker-review.py first}
+    command: ['node', 'seed-dist/scripts/seed-demo.js']
+    depends_on:
+      mongo: {condition: service_healthy}
+    networks: [data]
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+  web:
+    image: products-review-web:local
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - '127.0.0.1:${WEB_PORT:-8080}:8080'
+    restart: unless-stopped
+    depends_on:
+      api: {condition: service_healthy}
+    networks: [edge]
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+networks:
+  data:
+    internal: true
+  edge:
+volumes:
+  mongo-data:
