@@ -1,22 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { convertToParamMap } from '@angular/router';
-import {
-  DEFAULT_FILTERS,
-  filtersReplaced,
-  filtersToParams,
-  parseFilters,
-  productFilters,
-} from './product-filters';
-describe('shareable product filter state', () => {
-  it('preserves only filter state, not records or secrets', () =>
-    expect(Object.keys(DEFAULT_FILTERS).sort()).toEqual([
-      'category',
-      'page',
-      'pageSize',
-      'search',
-      'sortBy',
-      'sortDirection',
-    ]));
+import { DEFAULT_FILTERS } from '../constants/product-filters.constants';
+import { filtersToParams, parseFilters } from './product-filter-params.util';
+describe('product filter URL parameters', () => {
   it('parses bounded URL state', () =>
     expect(
       parseFilters(
@@ -51,14 +37,6 @@ describe('shareable product filter state', () => {
   it.each(['1.2', '1e2', '10001', 'Infinity'])('does not accept invalid page %s', (page) =>
     expect(parseFilters(convertToParamMap({ page })).page).toBe(1),
   );
-  it('reducer and selectors preserve immutable URL-derived filters', () => {
-    const filters = { ...DEFAULT_FILTERS, page: 3 };
-    const state = productFilters.reducer(DEFAULT_FILTERS, filtersReplaced({ filters }));
-    expect(state).toEqual(filters);
-    expect(state).not.toBe(filters);
-    expect(productFilters.selectPage.projector(state)).toBe(3);
-    expect(DEFAULT_FILTERS.page).toBe(1);
-  });
   it('round-trips URL state and omits empty filters', () => {
     const encoded = filtersToParams(DEFAULT_FILTERS);
     expect(encoded).not.toHaveProperty('search');

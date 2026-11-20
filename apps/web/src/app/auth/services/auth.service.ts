@@ -11,8 +11,8 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { API_BASE_URL } from '../core/api-config';
-import { LoginInput, SafeUser, TokenResponse } from '../core/models';
+import { API_BASE_URL } from '../../core/config/api-config';
+import { LoginInput, SafeUser, TokenResponse } from '../models/auth.models';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);

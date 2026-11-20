@@ -8,9 +8,10 @@ import {
 } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router, provideRouter } from '@angular/router';
-import { AuthService } from './auth.service';
+import { AuthService } from '../services/auth.service';
 import { authInterceptor } from './auth.interceptor';
-import { API_BASE_URL, isProtectedApiUrl } from '../core/api-config';
+import { API_BASE_URL } from '../../core/config/api-config';
+import { isProtectedApiUrl } from '../../core/utils/api-url.util';
 const base = 'https://api.example.test';
 const profile = {
   id: 'user',

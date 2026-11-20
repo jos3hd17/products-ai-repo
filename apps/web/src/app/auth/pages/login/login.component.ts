@@ -2,9 +2,9 @@ import { Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import { AuthService } from './auth.service';
-import { safeReturnUrl } from './utils/return-url.util';
-import { friendlyError } from '../core/friendly-error';
+import { AuthService } from '../../services/auth.service';
+import { safeReturnUrl } from '../../utils/return-url.util';
+import { friendlyError } from '../../../shared/utils/friendly-error.util';
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule],

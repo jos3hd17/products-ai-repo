@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { decimalPrice, displayPrice, parsePrice } from './money';
+import { decimalPrice, displayPrice, parsePrice } from './money.util';
 describe('integer minor-unit money boundaries', () => {
   it.each([
     ['0', 0],

@@ -1,7 +1,7 @@
 import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ProductEditorComponent } from './product-editor.component';
-import { Product } from '../core/models';
+import { Product } from '../../models/product.models';
 const product: Product = {
   id: '0123456789abcdef01234567',
   name: 'Seed',

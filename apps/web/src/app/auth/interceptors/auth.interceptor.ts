@@ -2,8 +2,9 @@ import { inject } from '@angular/core';
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError, of, switchMap, throwError } from 'rxjs';
-import { API_BASE_URL, isProtectedApiUrl } from '../core/api-config';
-import { AuthService } from './auth.service';
+import { API_BASE_URL } from '../../core/config/api-config';
+import { isProtectedApiUrl } from '../../core/utils/api-url.util';
+import { AuthService } from '../services/auth.service';
 export const authInterceptor: HttpInterceptorFn = (request, next) => {
   const base = inject(API_BASE_URL);
   if (!isProtectedApiUrl(request.url, base)) return next(request);

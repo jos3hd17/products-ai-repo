@@ -15,27 +15,20 @@ import {
   startWith,
   switchMap,
 } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
-import { Product, ProductFilters, ProductPage, ProductWrite, SortField } from '../core/models';
-import { friendlyError } from '../core/friendly-error';
-import { ConfirmDeleteComponent } from '../shared/confirm-delete.component';
-import {
-  DEFAULT_FILTERS,
-  filtersReplaced,
-  filtersToParams,
-  parseFilters,
-  productFilters,
-} from './product-filters';
-import { ProductsApi } from './products-api.service';
-import { ProductEditorComponent } from './product-editor.component';
-import { displayPrice } from './money';
+import { AuthService } from '../../../auth/services/auth.service';
+import { Product, ProductFilters, ProductPage, ProductWrite } from '../../models/product.models';
+import { SortField } from '../../constants/product-sort.constants';
+import { friendlyError } from '../../../shared/utils/friendly-error.util';
+import { ConfirmDeleteComponent } from '../../../shared/components/confirm-delete/confirm-delete.component';
+import { DEFAULT_FILTERS } from '../../constants/product-filters.constants';
+import { filtersReplaced, productFilters } from '../../store/product-filters.store';
+import { filtersToParams, parseFilters } from '../../utils/product-filter-params.util';
+import { ProductsApi } from '../../services/products-api.service';
+import { ProductEditorComponent } from '../../components/product-editor/product-editor.component';
+import { displayPrice } from '../../utils/money.util';
 @Component({
   selector: 'app-products',
-  imports: [
-    ReactiveFormsModule,
-    ProductEditorComponent,
-    ConfirmDeleteComponent,
-  ],
+  imports: [ReactiveFormsModule, ProductEditorComponent, ConfirmDeleteComponent],
   templateUrl: './products.component.html',
 })
 export class ProductsComponent {

@@ -1,18 +1,5 @@
-export interface SafeUser {
-  id: string;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-}
-export interface TokenResponse {
-  accessToken: string;
-  tokenType: 'Bearer';
-  expiresIn: number;
-}
-export interface LoginInput {
-  email: string;
-  password: string;
-}
+import { SortField } from '../constants/product-sort.constants';
+
 export interface ProductWrite {
   name: string;
   priceMinor: number;
@@ -25,8 +12,6 @@ export interface Product extends ProductWrite {
   createdAt: string;
   updatedAt: string;
 }
-export const SORT_FIELDS = ['name', 'priceMinor', 'stock', 'createdAt', 'updatedAt'] as const;
-export type SortField = (typeof SORT_FIELDS)[number];
 export interface ProductFilters {
   page: number;
   pageSize: number;
@@ -37,7 +22,12 @@ export interface ProductFilters {
 }
 export interface ProductPage {
   itemCount: number;
-  filters: { search: string | null; category: string | null; sortBy: SortField; sortDirection: 'asc' | 'desc' };
+  filters: {
+    search: string | null;
+    category: string | null;
+    sortBy: SortField;
+    sortDirection: 'asc' | 'desc';
+  };
   items: Product[];
   total: number;
   page: number;

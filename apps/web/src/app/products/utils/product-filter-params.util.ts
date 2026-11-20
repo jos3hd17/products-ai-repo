@@ -1,25 +1,7 @@
-import { createAction, createFeature, createReducer, on, props } from '@ngrx/store';
 import { ParamMap } from '@angular/router';
-import { ProductFilters, SORT_FIELDS, SortField } from '../core/models';
-export const DEFAULT_FILTERS: ProductFilters = {
-  page: 1,
-  pageSize: 20,
-  search: '',
-  category: '',
-  sortBy: 'createdAt',
-  sortDirection: 'desc',
-};
-export const filtersReplaced = createAction(
-  '[Products] Filters replaced',
-  props<{ filters: ProductFilters }>(),
-);
-export const productFilters = createFeature({
-  name: 'productFilters',
-  reducer: createReducer(
-    DEFAULT_FILTERS,
-    on(filtersReplaced, (_state, { filters }) => ({ ...filters })),
-  ),
-});
+import { ProductFilters } from '../models/product.models';
+import { SORT_FIELDS, SortField } from '../constants/product-sort.constants';
+
 export function parseFilters(params: ParamMap): ProductFilters {
   const bounded = (key: string, fallback: number, max: number) => {
     const value = params.get(key);

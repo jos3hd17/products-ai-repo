@@ -9,9 +9,13 @@ import {
   output,
 } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Product, ProductWrite } from '../core/models';
-import { decimalPrice, parsePrice } from './money';
-import { nameValidator, priceValidator, stockValidator } from './utils/product-form.validators';
+import { Product, ProductWrite } from '../../models/product.models';
+import { decimalPrice, parsePrice } from '../../utils/money.util';
+import {
+  nameValidator,
+  priceValidator,
+  stockValidator,
+} from '../../validators/product-form.validators';
 @Component({
   selector: 'app-product-editor',
   imports: [ReactiveFormsModule],

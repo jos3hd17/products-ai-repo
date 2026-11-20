@@ -3,9 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
-import { AuthService } from './auth.service';
+import { AuthService } from '../../services/auth.service';
 import { LoginComponent } from './login.component';
-import { safeReturnUrl } from './utils/return-url.util';
+import { safeReturnUrl } from '../../utils/return-url.util';
 describe('typed login form and safe navigation', () => {
   const auth = { login: vi.fn() };
   beforeEach(() => {

@@ -6,10 +6,10 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { provideStore } from '@ngrx/store';
 import { BehaviorSubject, of } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
-import { Product } from '../core/models';
+import { AuthService } from '../../../auth/services/auth.service';
+import { Product } from '../../models/product.models';
 import { ProductsComponent } from './products.component';
-import { productFilters } from './product-filters';
+import { productFilters } from '../../store/product-filters.store';
 const product: Product = {
   id: '0123456789abcdef01234567',
   name: 'Organic Seed',
@@ -42,7 +42,10 @@ describe('catalog CRUD and server-side page interactions', () => {
     http = TestBed.inject(HttpTestingController);
     vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
   });
-  afterEach(() => { vi.useRealTimers(); http.verify(); });
+  afterEach(() => {
+    vi.useRealTimers();
+    http.verify();
+  });
   function setup() {
     const fixture = TestBed.createComponent(ProductsComponent);
     fixture.detectChanges();
@@ -50,14 +53,30 @@ describe('catalog CRUD and server-side page interactions', () => {
     expect(request.request.params.get('pageSize')).toBe('20');
     expect(request.request.params.has('category')).toBe(false);
     expect(request.request.params.has('search')).toBe(false);
-    request.flush({ itemCount: 1, filters: { search: null, category: null, sortBy: 'createdAt', sortDirection: 'desc' }, items: [product], total: 1, page: 1, pageSize: 20, totalPages: 1 });
+    request.flush({
+      itemCount: 1,
+      filters: { search: null, category: null, sortBy: 'createdAt', sortDirection: 'desc' },
+      items: [product],
+      total: 1,
+      page: 1,
+      pageSize: 20,
+      totalPages: 1,
+    });
     fixture.detectChanges();
     return fixture;
   }
   function flushList() {
     http
       .expectOne((r) => r.url === '/products' && r.method === 'GET')
-      .flush({ itemCount: 1, filters: { search: null, category: null, sortBy: 'createdAt', sortDirection: 'desc' }, items: [product], total: 1, page: 1, pageSize: 20, totalPages: 1 });
+      .flush({
+        itemCount: 1,
+        filters: { search: null, category: null, sortBy: 'createdAt', sortDirection: 'desc' },
+        items: [product],
+        total: 1,
+        page: 1,
+        pageSize: 20,
+        totalPages: 1,
+      });
   }
   it('renders API values as safe text and prices with exact minor units', () => {
     const fixture = setup();
@@ -109,14 +128,18 @@ describe('catalog CRUD and server-side page interactions', () => {
     const fixture = setup();
     const c = fixture.componentInstance;
     c.save({ name: 'First', priceMinor: 1, stock: 1 });
-    http.expectOne('/products').flush(product); flushList();
+    http.expectOne('/products').flush(product);
+    flushList();
     vi.advanceTimersByTime(3000);
     c.save({ name: 'Second', priceMinor: 1, stock: 1 });
-    http.expectOne('/products').flush(product); flushList();
+    http.expectOne('/products').flush(product);
+    flushList();
     vi.advanceTimersByTime(1000);
     expect(c.toast()).toContain('creado');
     fixture.detectChanges();
-    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('[aria-label="Cerrar mensaje"]')!.click();
+    (fixture.nativeElement as HTMLElement)
+      .querySelector<HTMLButtonElement>('[aria-label="Cerrar mensaje"]')!
+      .click();
     expect(c.toast()).toBe('');
     vi.advanceTimersByTime(4000);
     expect(c.toast()).toBe('');
@@ -172,10 +195,23 @@ describe('catalog CRUD and server-side page interactions', () => {
     const request = http.expectOne((r) => r.url === '/products');
     expect(request.request.params.get('page')).toBe('2');
     expect(request.request.params.get('category')).toBe('Seeds');
-    request.flush({ itemCount: 1, filters: { search: 'Organic', category: 'Seeds', sortBy: 'priceMinor', sortDirection: 'asc' }, items: [product], total: 11, page: 2, pageSize: 10, totalPages: 2 });
+    request.flush({
+      itemCount: 1,
+      filters: { search: 'Organic', category: 'Seeds', sortBy: 'priceMinor', sortDirection: 'asc' },
+      items: [product],
+      total: 11,
+      page: 2,
+      pageSize: 10,
+      totalPages: 2,
+    });
     expect(fixture.componentInstance.filters().page).toBe(2);
     expect(fixture.componentInstance.data().itemCount).toBe(1);
-    expect(fixture.componentInstance.data().filters).toEqual({ search: 'Organic', category: 'Seeds', sortBy: 'priceMinor', sortDirection: 'asc' });
+    expect(fixture.componentInstance.data().filters).toEqual({
+      search: 'Organic',
+      category: 'Seeds',
+      sortBy: 'priceMinor',
+      sortDirection: 'asc',
+    });
     fixture.detectChanges();
     expect((fixture.nativeElement as HTMLElement).textContent).toContain('1 de 11 productos');
     expect((fixture.nativeElement as HTMLElement).textContent).toMatch(/Página\s+2 de 2/);
@@ -186,7 +222,15 @@ describe('catalog CRUD and server-side page interactions', () => {
     c.refresh();
     http
       .expectOne((r) => r.url === '/products')
-      .flush({ itemCount: 0, filters: { search: null, category: null, sortBy: 'createdAt', sortDirection: 'desc' }, items: [], total: 0, page: 1, pageSize: 20, totalPages: 0 });
+      .flush({
+        itemCount: 0,
+        filters: { search: null, category: null, sortBy: 'createdAt', sortDirection: 'desc' },
+        items: [],
+        total: 0,
+        page: 1,
+        pageSize: 20,
+        totalPages: 0,
+      });
     fixture.detectChanges();
     expect((fixture.nativeElement as HTMLElement).textContent).toContain(
       'Tu catálogo empieza aquí',

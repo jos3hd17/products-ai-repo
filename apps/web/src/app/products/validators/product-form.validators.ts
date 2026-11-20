@@ -1,5 +1,5 @@
 import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { parsePrice } from '../money';
+import { parsePrice } from '../utils/money.util';
 
 export function priceValidator(control: AbstractControl): ValidationErrors | null {
   return parsePrice(String(control.value)) === null ? { price: true } : null;

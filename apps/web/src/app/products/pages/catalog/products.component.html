@@ -184,8 +184,8 @@
         }
         <footer class="pagination">
           <span
-            >{{ data().itemCount }} de {{ data().total }} productos <span class="muted">·</span> Página
-            {{ data().page }} de {{ data().totalPages }}</span
+            >{{ data().itemCount }} de {{ data().total }} productos
+            <span class="muted">·</span> Página {{ data().page }} de {{ data().totalPages }}</span
           >
           <div class="pagination-controls">
             <label for="page-size">Por página</label
@@ -210,9 +210,7 @@
               type="button"
               aria-label="Página siguiente"
               (click)="page(1)"
-              [disabled]="
-                loading() || data().page >= data().totalPages || data().page >= 10000
-              "
+              [disabled]="loading() || data().page >= data().totalPages || data().page >= 10000"
             >
               →
             </button>
@@ -245,6 +243,8 @@
   <div class="catalog-toast" role="status" aria-live="polite" aria-atomic="true">
     <span class="toast-check" aria-hidden="true">✓</span>
     <span>{{ toast() }}</span>
-    <button class="icon-button" type="button" aria-label="Cerrar mensaje" (click)="dismissToast()">✕</button>
+    <button class="icon-button" type="button" aria-label="Cerrar mensaje" (click)="dismissToast()">
+      ✕
+    </button>
   </div>
 }
