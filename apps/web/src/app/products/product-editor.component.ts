@@ -8,124 +8,14 @@ import {
   input,
   output,
 } from '@angular/core';
-import {
-  AbstractControl,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Product, ProductWrite } from '../core/models';
 import { decimalPrice, parsePrice } from './money';
-export function priceValidator(control: AbstractControl): ValidationErrors | null {
-  return parsePrice(String(control.value)) === null ? { price: true } : null;
-}
-export function stockValidator(control: AbstractControl): ValidationErrors | null {
-  const s = String(control.value).trim();
-  return /^\d+$/.test(s) && Number.isSafeInteger(Number(s)) ? null : { stock: true };
-}
-export function nameValidator(control: AbstractControl): ValidationErrors | null {
-  return String(control.value).trim() ? null : { required: true };
-}
+import { nameValidator, priceValidator, stockValidator } from './utils/product-form.validators';
 @Component({
   selector: 'app-product-editor',
   imports: [ReactiveFormsModule],
-  template: ` <dialog
-    #dialog
-    class="editor-dialog"
-    (cancel)="cancel($event)"
-    aria-labelledby="editor-title"
-  >
-    <header class="dialog-header">
-      <div>
-        <p class="eyebrow">CATÁLOGO</p>
-        <h2 id="editor-title">{{ product() ? 'Editar producto' : 'Nuevo producto' }}</h2>
-      </div>
-      <button
-        class="icon-button"
-        type="button"
-        aria-label="Cerrar formulario"
-        (click)="closed.emit()"
-        [disabled]="busy()"
-      >
-        ✕
-      </button>
-    </header>
-    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-      @if (error()) {
-        <div class="notice error" role="alert">{{ error() }}</div>
-      }
-      <label for="product-name">Nombre del producto <span aria-hidden="true">*</span></label
-      ><input
-        id="product-name"
-        autofocus
-        formControlName="name"
-        maxlength="120"
-        placeholder="Ej. Semilla de maíz"
-        [attr.aria-invalid]="invalid('name')"
-        aria-describedby="name-error"
-      />
-      @if (invalid('name')) {
-        <small id="name-error" class="field-error"
-          >Escribe un nombre de hasta 120 caracteres.</small
-        >
-      }
-      <div class="form-grid">
-        <div>
-          <label for="product-price">Precio <span aria-hidden="true">*</span></label
-          ><input
-            id="product-price"
-            formControlName="price"
-            inputmode="decimal"
-            placeholder="0.00"
-            maxlength="24"
-            [attr.aria-invalid]="invalid('price')"
-            aria-describedby="price-hint"
-          /><small id="price-hint" [class.field-error]="invalid('price')">{{
-            invalid('price')
-              ? 'Ingresa un precio válido, sin negativos y con máximo dos decimales.'
-              : 'Usa punto para los decimales. Ejemplo: 12.50'
-          }}</small>
-        </div>
-        <div>
-          <label for="product-stock">Existencias <span aria-hidden="true">*</span></label
-          ><input
-            id="product-stock"
-            formControlName="stock"
-            inputmode="numeric"
-            maxlength="16"
-            [attr.aria-invalid]="invalid('stock')"
-            aria-describedby="stock-error"
-          />
-          @if (invalid('stock')) {
-            <small id="stock-error" class="field-error">Ingresa un número entero desde cero.</small>
-          }
-        </div>
-      </div>
-      <label for="product-category">Categoría <span class="optional">opcional</span></label
-      ><input
-        id="product-category"
-        formControlName="category"
-        maxlength="80"
-        placeholder="Ej. Semillas"
-      />
-      <label for="product-description">Descripción <span class="optional">opcional</span></label
-      ><textarea
-        id="product-description"
-        formControlName="description"
-        rows="3"
-        maxlength="2000"
-        placeholder="Lo esencial para identificar este producto"
-      ></textarea>
-      <footer class="dialog-footer">
-        <button class="button secondary" type="button" (click)="closed.emit()" [disabled]="busy()">
-          Cancelar</button
-        ><button class="button primary" type="submit" [disabled]="busy()">
-          {{ busy() ? 'Guardando…' : product() ? 'Guardar cambios' : 'Crear producto' }}
-        </button>
-      </footer>
-    </form>
-  </dialog>`,
+  templateUrl: './product-editor.component.html',
 })
 export class ProductEditorComponent implements AfterViewInit {
   readonly product = input<Product | null>(null);

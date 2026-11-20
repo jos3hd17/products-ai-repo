@@ -5,7 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { of, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { LoginComponent } from './login.component';
-import { safeReturnUrl } from './auth.guards';
+import { safeReturnUrl } from './utils/return-url.util';
 describe('typed login form and safe navigation', () => {
   const auth = { login: vi.fn() };
   beforeEach(() => {

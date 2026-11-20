@@ -19,6 +19,3 @@ export const guestGuard: CanActivateFn = () => {
     .ensureSession()
     .pipe(map((ok) => (ok ? router.createUrlTree(['/catalog']) : true)));
 };
-export function safeReturnUrl(value: string | null): string {
-  return value && /^\/catalog(?:\?|$)/.test(value) ? value : '/catalog';
-}
